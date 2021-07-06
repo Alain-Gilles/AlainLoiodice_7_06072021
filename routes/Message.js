@@ -12,7 +12,7 @@ router.put("/:messageID", messageCtrl.modifyMessage);
 //
 // Supprimer un message
 //
-//router.delete("/:messageID", messageCtrl.deleteMessage);
+router.delete("/:messageID", messageCtrl.deleteMessage);
 //
 // Afficher tous les messages
 //

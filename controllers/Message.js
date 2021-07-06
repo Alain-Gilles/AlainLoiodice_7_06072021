@@ -123,3 +123,19 @@ exports.modifyMessage = (req, res) => {
 //
 //router.delete("/:messageID", messageCtrl.deleteMessage);
 //
+exports.deleteMessage = async (req, res) => {
+  let messageId = req.params.messageID;
+  console.log("messageId", messageId);
+  let message = await Message.findByPk(messageId);
+  console.log("message", message);
+  if (!message) {
+    res.status(404).send({
+      message: "Does Not exist a Message with id = " + messageId,
+    });
+  } else {
+    await message.destroy();
+    res.status(200).send({
+      message: "Delete Successfully a Message with id = " + messageId,
+    });
+  }
+};
