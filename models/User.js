@@ -28,6 +28,11 @@ module.exports = (sequelize, DataTypes) => {
     avatar: {
       type: DataTypes.STRING,
     },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      required: true,
+    },
   });
 
   return User;

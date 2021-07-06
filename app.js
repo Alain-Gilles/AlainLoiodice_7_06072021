@@ -1,6 +1,10 @@
 const express = require("express");
 
+const helmet = require("helmet");
+
 const app = express();
+
+require("dotenv").config({ path: "./config/.env" });
 
 const userRoutes = require("./routes/User");
 

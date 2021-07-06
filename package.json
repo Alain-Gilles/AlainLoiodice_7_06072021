@@ -17,8 +17,14 @@
   },
   "homepage": "https://github.com/alain-gilles/AlainLoiodice_7_06072021#readme",
   "dependencies": {
+    "bcrypt": "^5.0.1",
+    "dotenv": "^10.0.0",
+    "email-validator": "^2.0.4",
     "express": "^4.17.1",
+    "helmet": "^4.6.0",
+    "jsonwebtoken": "^8.5.1",
     "mysql2": "^2.2.5",
+    "password-validator": "^5.1.1",
     "sequelize": "^6.6.4"
   }
 }

@@ -8,7 +8,7 @@ router.post("/", commentCtrl.createComment);
 //
 // Modifier un commentaire
 //
-//router.put("/:commentID", commentCtrl.modifyComment);
+router.put("/:commentID", commentCtrl.modifyComment);
 //
 // Supprimer un commentaire
 //
