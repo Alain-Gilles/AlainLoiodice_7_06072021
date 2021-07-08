@@ -12,6 +12,8 @@ const messageRoute = require("./routes/Message");
 
 const commentRoute = require("./routes/Comment");
 
+const likedislikeRoute = require("./routes/Likedislike");
+
 // parse requests of content-type - application/json
 app.use(express.json());
 
@@ -26,5 +28,7 @@ app.use("/api/auth", userRoutes);
 app.use("/api/mess", messageRoute);
 
 app.use("/api/comm", commentRoute);
+
+app.use("/api/likedislike", likedislikeRoute);
 
 module.exports = app;

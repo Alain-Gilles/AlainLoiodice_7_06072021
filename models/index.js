@@ -31,6 +31,7 @@ db.sequelize = sequelize;
 db.users = require("./User.js")(sequelize, Sequelize);
 db.messages = require("./Message.js")(sequelize, Sequelize);
 db.comments = require("./Comment.js")(sequelize, Sequelize);
+db.likedislikes = require("./Likedislike.js")(sequelize, Sequelize);
 
 db.users.hasMany(db.messages, { as: "messages" }, { onDelete: "cascade" });
 db.messages.belongsTo(db.users, {
@@ -44,8 +45,28 @@ db.comments.belongsTo(db.users, {
   as: "user",
 });
 
+db.users.hasMany(
+  db.likedislikes,
+  { as: "likedislikes" },
+  { onDelete: "cascade" }
+);
+db.likedislikes.belongsTo(db.users, {
+  foreignKey: "userId",
+  as: "user",
+});
+
 db.messages.hasMany(db.comments, { as: "comments" }, { onDelete: "cascade" });
 db.comments.belongsTo(db.messages, {
+  foreignKey: "messageId",
+  as: "message",
+});
+
+db.messages.hasMany(
+  db.likedislikes,
+  { as: "likedislikes" },
+  { onDelete: "cascade" }
+);
+db.likedislikes.belongsTo(db.messages, {
   foreignKey: "messageId",
   as: "message",
 });

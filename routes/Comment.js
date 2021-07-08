@@ -12,14 +12,10 @@ router.put("/:commentID", commentCtrl.modifyComment);
 //
 // Supprimer un commentaire
 //
-//router.delete("/:commentID", commentCtrl.deleteComment);
-//
-//  Afficher tous les commentaires d'un message
-//
-//router.get("/", commentCtrl.getAllComment);
+router.delete("/:commentID", commentCtrl.deleteComment);
 //
 // Afficher un commentaire
 //
-//router.get("/:commentID", commentCtrl.getOneComment);
-
+router.get("/:commentID", commentCtrl.getOneComment);
+//
 module.exports = router;

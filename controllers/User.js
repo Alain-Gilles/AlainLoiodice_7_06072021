@@ -3,15 +3,17 @@ const User = db.users;
 const Message = db.messages;
 
 // Create and Save a new User
-exports.signup = (req, res) => {
+exports.signup = (req, res, next) => {
   // Validate request
-  console.log("req.body", req.body);
   if (!req.body.username) {
     res.status(400).send({
       message: "Content can not be empty!",
     });
     return;
   }
+  //
+  // controle a effectuer : adressmail valide et unique , speudo  unique
+  //
 
   // Create a User
   const user = {
@@ -20,6 +22,7 @@ exports.signup = (req, res) => {
     isAdmin: 0,
     password: req.body.password,
     avatar: req.body.avatar,
+    email: req.body.email,
   };
 
   // Save Post in the database

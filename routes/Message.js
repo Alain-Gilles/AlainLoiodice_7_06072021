@@ -18,6 +18,10 @@ router.delete("/:messageID", messageCtrl.deleteMessage);
 //
 router.get("/", messageCtrl.getAllMessage);
 //
+// Afficher tous les commentaires d'un message
+//
+router.get("/comm/:messageID", messageCtrl.getAllCommFromMessage);
+//
 // Afficher un message
 //
 router.get("/:messageID", messageCtrl.getOneMessage);
