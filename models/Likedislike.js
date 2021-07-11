@@ -9,11 +9,11 @@
 
 module.exports = (sequelize, DataTypes) => {
   const Likedislike = sequelize.define("likedislike", {
-    like: {
+    liked: {
       type: DataTypes.INTEGER,
       defaultValue: 0,
     },
-    dislike: {
+    disliked: {
       type: DataTypes.INTEGER,
       defaultValue: 0,
     },

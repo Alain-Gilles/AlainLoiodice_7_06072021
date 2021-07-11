@@ -10,11 +10,11 @@ router.post("/", likedislikeCtrl.createLikedislike);
 //
 router.delete("/", likedislikeCtrl.deleteLikedislike);
 //
-// Afficher tous les likes ou dislikes pour un message
+// Afficher le nombre de like et de dislike  pour un message
 //
 router.get("/", likedislikeCtrl.getAllLikedislike);
 //
-// Afficher le like ou dislike d'un utilisateur pour un message
+// Afficher le nombre de like et de dislike d'un utilisateur pour un message
 //
 router.get("/user", likedislikeCtrl.getUsermessLike);
 //

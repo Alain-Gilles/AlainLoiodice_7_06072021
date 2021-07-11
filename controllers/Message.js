@@ -5,7 +5,7 @@ const Comment = db.comments;
 
 // Create and Save a new Message
 exports.createMessage = async (req, res, next) => {
-  console.log("req", req);
+  console.log("req.body", req.body);
   // Validate request
   if (!req.body.title) {
     res.status(400).send({
