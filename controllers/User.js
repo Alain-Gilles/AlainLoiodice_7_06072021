@@ -210,3 +210,113 @@ exports.signup = async (req, res, next) => {
     })
     .catch((error) => res.status(500).json({ error }));
 };
+
+exports.login = async (req, res, next) => {
+  //
+  // l'utilisateur peut se connecter avec speudo + password ou  email + password
+  //
+  let MotDePasse = "";
+  let User_Id = 0;
+  //
+  // si speudo est renseigné il doit exister
+  //
+  if (req.body.speudo) {
+    let user1 = await User.findOne({
+      where: { speudo: req.body.speudo },
+    });
+    if (!user1) {
+      res.status(400).send({
+        message: "Le speudo s'il est renseigné doit exister",
+      });
+      return;
+    }
+    MotDePasse = user1.password;
+    User_Id = user1.id;
+  }
+  //
+  // il faut renseigner soit le speudo soit email
+  //
+  if (!req.body.speudo && !req.body.email) {
+    res.status(400).send({
+      message:
+        "vous devez vous connecter soit avec votre speudo et votre mot de passe soit avec votre adresse email et votre mot de passe",
+    });
+    return;
+  }
+  //
+  // Saisir soit votre speudo soit votre adresse email
+  //
+  if (req.body.speudo && req.body.email) {
+    res.status(400).send({
+      message: "saisir soit votre speudo soit votre email",
+    });
+    return;
+  }
+  //
+  // La saisie du mot de passe est obligatoire
+  //
+  if (!req.body.password) {
+    res.status(400).send({
+      message: "La saisie du mot de passe est obligatoire",
+    });
+    return;
+  }
+  //
+  // L'utilisateur se connecte avec email + mot de passe
+  //
+  if (req.body.email) {
+    //
+    // Encodage de email passé dans req.body
+    //
+    key = process.env.KEY;
+    iv = process.env.IV;
+    var ciphertext = CryptoJS.AES.encrypt(
+      req.body.email,
+      CryptoJS.enc.Base64.parse(key),
+      { iv: CryptoJS.enc.Base64.parse(iv) }
+    ).toString();
+    console.log("login ciphertext  :", ciphertext);
+    //
+    let emailcrypt = ciphertext;
+    //
+    //
+    let user = await User.findOne({
+      where: { email: emailcrypt },
+    });
+
+    if (!user) {
+      res.status(400).send({
+        message: "Email n'existe pas connexion refusée",
+      });
+      return;
+    }
+    MotDePasse = user.password;
+    User_Id = user.id;
+  }
+  //
+  // connexion avec speudo + email
+  else {
+  }
+
+  bcrypt
+    .compare(req.body.password, MotDePasse)
+    .then((valid) => {
+      if (!valid) {
+        res.status(400).send({
+          message: "Connexion refusée mot de passe non reconnu",
+        });
+        return;
+      }
+      res.status(200).send({
+        userId: User_Id,
+        token: jwt.sign({ userId: User_Id }, process.env.SECRET_KEY, {
+          expiresIn: "24h",
+        }),
+      });
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while creating the User.",
+      });
+    });
+};
