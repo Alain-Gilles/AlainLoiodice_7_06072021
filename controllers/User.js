@@ -134,7 +134,6 @@ exports.signup = async (req, res, next) => {
       //
       // encryptage de l'email
       //
-
       key = process.env.KEY;
       iv = process.env.IV;
 
@@ -158,42 +157,56 @@ exports.signup = async (req, res, next) => {
 
       console.log("emailcrypt", emailcrypt);
       console.log("passwordcrypt", passwordcrypt);
-
       //
+      // Définition d'un fonction asynchrone qui va rechercher si l'email encrypté existe deja dans la base
+      // Si c'est le cas erreur car in veut une adresse email unique
+      //
+      // L'appel de findOne doit se faire avec await c'est pourquoi la fonction d'appel doit etre async
+      //
+      async function f() {
+        let user3 = await User.findOne({
+          where: { email: emailcrypt },
+        });
+
+        if (user3) {
+          res.status(400).send({
+            message:
+              "Email doit-être unique , un autre utilisateur a déja entré cet email",
+          });
+          return;
+        }
+      }
+      //
+      // appel de la fonction de controle unicité du email dans la BD
+      // On verifie que l'email cryptée est bien unique dans la base de données
+      //
+      f();
+      //
+      // L'email est unique on poursuit
+      //
+      //
+      // Create a User
+      //
+      const user = {
+        username: req.body.username,
+        speudo: req.body.speudo,
+        isAdmin: 0,
+        password: passwordcrypt,
+        avatar: req.body.avatar,
+        email: emailcrypt,
+      };
+
+      // Save Post in the database
+      User.create(user)
+        .then((data) => {
+          res.send(data);
+        })
+        .catch((err) => {
+          res.status(500).send({
+            message:
+              err.message || "Some error occurred while creating the User.",
+          });
+        });
     })
     .catch((error) => res.status(500).json({ error }));
-  //
-  // On verifie que l'email cryptée est bien unique dans la base de données
-  //
-  user2 = await User.findOne({
-    where: { email: emailcrypt },
-  });
-  if (user2) {
-    res.status(400).send({
-      message:
-        "Email doit-être unique , un autre utilisateur a déja entré cet email",
-    });
-    return;
-  }
-
-  // Create a User
-  const user = {
-    username: req.body.username,
-    speudo: req.body.speudo,
-    isAdmin: 0,
-    password: req.body.password,
-    avatar: req.body.avatar,
-    email: req.body.email,
-  };
-
-  // Save Post in the database
-  User.create(user)
-    .then((data) => {
-      res.send(data);
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: err.message || "Some error occurred while creating the User.",
-      });
-    });
 };
