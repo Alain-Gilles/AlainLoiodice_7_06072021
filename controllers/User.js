@@ -59,6 +59,7 @@ exports.signup = async (req, res, next) => {
   let user2 = await User.findOne({
     where: { pseudo: req.body.pseudo },
   });
+  console.log("user2", user2);
   if (user2) {
     res.status(400).send({
       message: "Le pseudo doit être unique",
@@ -146,11 +147,6 @@ exports.signup = async (req, res, next) => {
         { iv: CryptoJS.enc.Base64.parse(iv) }
       ).toString();
       console.log("signup ciphertext  :", ciphertext);
-      //
-      // const user = new User({
-      //   email: req.body.email,
-      //   password: hash,
-      // });
 
       let emailcrypt = ciphertext;
       let passwordcrypt = hash;

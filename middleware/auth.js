@@ -15,8 +15,8 @@ module.exports = (req, res, next) => {
       next();
     }
   } catch {
-    res.status(401).json({
-      error: new Error("Invalid request!"),
+    res.status(401).send({
+      message: "Requete invalide utilisateur ne peut effectuer cette action",
     });
   }
 };

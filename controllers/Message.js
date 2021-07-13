@@ -2,6 +2,7 @@ const db = require("../models");
 const Message = db.messages;
 const User = db.users;
 const Comment = db.comments;
+const fs = require("fs");
 
 // Create and Save a new Message
 exports.createMessage = async (req, res, next) => {
@@ -9,7 +10,7 @@ exports.createMessage = async (req, res, next) => {
   // Validate request
   if (!req.body.title) {
     res.status(400).send({
-      message: "title can not be empty!",
+      message: "title can not be empty!!!",
     });
     return;
   }
@@ -65,7 +66,26 @@ exports.createMessage = async (req, res, next) => {
 //
 // Get all Messages
 //
-exports.getAllMessage = (req, res, next) => {
+exports.getAllMessage = async (req, res, next) => {
+  //
+  // l'Id de l'utilisateur connecté est obligatoire
+  //
+  if (!req.body.userId) {
+    res.status(400).send({
+      message: "user can not be empty!",
+    });
+    return;
+  }
+  //
+  // L'utilisateur doit exister sinon erreur
+  //
+  let user = await User.findByPk(req.body.userId);
+  if (!user) {
+    res.status(400).send({
+      message: "Does Not exist a User with id = " + req.body.userId,
+    });
+    return;
+  }
   Message.findAll()
     .then((data) => {
       res.send(data);
@@ -80,14 +100,33 @@ exports.getAllMessage = (req, res, next) => {
 // Get One Messages
 // La methode findByPk n'obtient qu'une seule entrée de la table, à l'aide de la clé primaire fournie.
 //
-exports.getOneMessage = (req, res, next) => {
+exports.getOneMessage = async (req, res, next) => {
   _messageID = req.params.messageID;
+  //
+  // l'Id de l'utilisateur connecté est obligatoire
+  //
+  if (!req.body.userId) {
+    res.status(400).send({
+      message: "user can not be empty!",
+    });
+    return;
+  }
+  //
+  // L'utilisateur doit exister sinon erreur
+  //
+  let user = await User.findByPk(req.body.userId);
+  if (!user) {
+    res.status(400).send({
+      message: "Does Not exist a User with id = " + req.body.userId,
+    });
+    return;
+  }
 
   Message.findByPk(_messageID)
     .then((data) => {
       if (data === null) {
         res.status(500).send({
-          message: "Some error occurred while retrieving Message.",
+          message: "Le message n'a pas été trouvé.....",
         });
       } else {
         res.send(data);
@@ -117,20 +156,14 @@ exports.modifyMessage = async (req, res, next) => {
   //
   // Validate request
   //
-  if (!req.body.utilisateurID) {
+  if (!req.body.userId) {
     res.status(400).send({
-      message: "utilisateurID connected user can not be empty!",
+      message: "userId : user connected can not be empty!",
     });
     return;
   }
   if (
-    !(
-      req.body.title ||
-      req.body.content ||
-      req.body.imgUrl ||
-      req.body.objet ||
-      req.body.userId
-    )
+    !(req.body.title || req.body.content || req.body.imgUrl || req.body.objet)
   ) {
     res.status(400).send({
       message: "Must be some thing to update !",
@@ -138,7 +171,7 @@ exports.modifyMessage = async (req, res, next) => {
     return;
   }
 
-  _userID = req.body.utilisateurID;
+  _userID = req.body.userId;
 
   // Données de Message à updater
   const majMessage = {
@@ -220,7 +253,7 @@ exports.modifyMessage = async (req, res, next) => {
 exports.deleteMessage = async (req, res, next) => {
   ///
   var messageId = req.params.messageID;
-  var _userID = req.body.utilisateurID;
+  var _userID = req.body.userId;
   //
   // Le message à supprimer doit exister
   //
@@ -244,9 +277,6 @@ exports.deleteMessage = async (req, res, next) => {
   //
   // Seul le créateur du message ou l'administrateur peuvent le supprimer
   //
-  console.log("messageId", messageId);
-  console.log("_userID", _userID);
-  console.log("user.isAdmin", user.isAdmin);
 
   if (!(message.userId == _userID || user.isAdmin)) {
     res.status(400).send({
