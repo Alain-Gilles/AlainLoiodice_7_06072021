@@ -47,8 +47,6 @@ exports.createMessage = async (req, res, next) => {
     content: req.body.content,
     imgUrl: req.body.imgUrl,
     objet: req.body.objet,
-    nbLike: 0,
-    nbUnlike: 0,
     userId: req.body.userId,
   };
 

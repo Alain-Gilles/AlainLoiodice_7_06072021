@@ -18,12 +18,6 @@ module.exports = (sequelize, DataTypes) => {
     imgUrl: {
       type: DataTypes.STRING,
     },
-    nbLike: {
-      type: DataTypes.INTEGER,
-    },
-    nbUnlike: {
-      type: DataTypes.INTEGER,
-    },
     isDelete: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
