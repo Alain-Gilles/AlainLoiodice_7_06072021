@@ -31,7 +31,7 @@ const MIME_TYPES = {
 // on va utiliser le nom d'origine du fichier grâce à file.originalname, cependant il est possible que le nom de fichier
 // contienne des espaces car cela peut provoquer des problèmes coté serveur, on va les supprimer et les replacer dar des underscore "_".
 // Pour ce faire on utilise la méthode split. On va splier autour des espaces, ce qui va créer un tableau avec les différents mots du nom de fichier
-// et on appelle la methode .join pour rejoindre ce tabelau en un seul string avec des underscore "_" qui séparent chaque mot ( à la place des espaces).
+// et on appelle la methode .join pour rejoindre ce tableau en un seul string avec des underscore "_" qui séparent chaque mot ( à la place des espaces).
 //
 // La méthode split() divise une chaîne de caractères en une liste ordonnée de sous-chaînes, place ces sous-chaînes dans un tableau et retourne le tableau.
 // La division est effectuée en recherchant un motif ; où le motif est fourni comme premier paramètre dans l'appel de la méthode.

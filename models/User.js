@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       required: true,
     },
-    speudo: {
+    pseudo: {
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,

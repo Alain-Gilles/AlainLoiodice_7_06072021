@@ -45,23 +45,23 @@ exports.signup = async (req, res, next) => {
     return;
   }
   //
-  // speudo obligatoire
+  // pseudo obligatoire
   //
-  if (!req.body.speudo) {
+  if (!req.body.pseudo) {
     res.status(400).send({
-      message: "speudo est obligatoire can not be empty!",
+      message: "pseudo est obligatoire can not be empty!",
     });
     return;
   }
   //
-  // Le speudo doit-être unique
+  // Le pseudo doit-être unique
   //
   let user2 = await User.findOne({
-    where: { speudo: req.body.speudo },
+    where: { pseudo: req.body.pseudo },
   });
   if (user2) {
     res.status(400).send({
-      message: "Le speudo doit être unique",
+      message: "Le pseudo doit être unique",
     });
     return;
   }
@@ -130,7 +130,7 @@ exports.signup = async (req, res, next) => {
   //
   bcrypt
     .hash(req.body.password, 10)
-    .then((hash) => {
+    .then(async (hash) => {
       //
       // encryptage de l'email
       //
@@ -163,24 +163,21 @@ exports.signup = async (req, res, next) => {
       //
       // L'appel de findOne doit se faire avec await c'est pourquoi la fonction d'appel doit etre async
       //
-      async function f() {
-        let user3 = await User.findOne({
-          where: { email: emailcrypt },
-        });
+      let user3 = await User.findOne({
+        where: { email: emailcrypt },
+      });
 
-        if (user3) {
-          res.status(400).send({
-            message:
-              "Email doit-être unique , un autre utilisateur a déja entré cet email",
-          });
-          return;
-        }
+      if (user3) {
+        res.status(400).send({
+          message:
+            "Email doit-être unique , un autre utilisateur a déja entré cet email",
+        });
+        return;
       }
       //
       // appel de la fonction de controle unicité du email dans la BD
       // On verifie que l'email cryptée est bien unique dans la base de données
       //
-      f();
       //
       // L'email est unique on poursuit
       //
@@ -189,7 +186,7 @@ exports.signup = async (req, res, next) => {
       //
       const user = {
         username: req.body.username,
-        speudo: req.body.speudo,
+        pseudo: req.body.pseudo,
         isAdmin: 0,
         password: passwordcrypt,
         avatar: req.body.avatar,
@@ -213,20 +210,20 @@ exports.signup = async (req, res, next) => {
 
 exports.login = async (req, res, next) => {
   //
-  // l'utilisateur peut se connecter avec speudo + password ou  email + password
+  // l'utilisateur peut se connecter avec pseudo + password ou  email + password
   //
   let MotDePasse = "";
   let User_Id = 0;
   //
-  // si speudo est renseigné il doit exister
+  // si pseudo est renseigné il doit exister
   //
-  if (req.body.speudo) {
+  if (req.body.pseudo) {
     let user1 = await User.findOne({
-      where: { speudo: req.body.speudo },
+      where: { pseudo: req.body.pseudo },
     });
     if (!user1) {
       res.status(400).send({
-        message: "Le speudo s'il est renseigné doit exister",
+        message: "Le pseudo s'il est renseigné doit exister",
       });
       return;
     }
@@ -234,21 +231,21 @@ exports.login = async (req, res, next) => {
     User_Id = user1.id;
   }
   //
-  // il faut renseigner soit le speudo soit email
+  // il faut renseigner soit le pseudo soit email
   //
-  if (!req.body.speudo && !req.body.email) {
+  if (!req.body.pseudo && !req.body.email) {
     res.status(400).send({
       message:
-        "vous devez vous connecter soit avec votre speudo et votre mot de passe soit avec votre adresse email et votre mot de passe",
+        "vous devez vous connecter soit avec votre pseudo et votre mot de passe soit avec votre adresse email et votre mot de passe",
     });
     return;
   }
   //
-  // Saisir soit votre speudo soit votre adresse email
+  // Saisir soit votre pseudo soit votre adresse email
   //
-  if (req.body.speudo && req.body.email) {
+  if (req.body.pseudo && req.body.email) {
     res.status(400).send({
-      message: "saisir soit votre speudo soit votre email",
+      message: "saisir soit votre pseudo soit votre email",
     });
     return;
   }
@@ -292,10 +289,6 @@ exports.login = async (req, res, next) => {
     }
     MotDePasse = user.password;
     User_Id = user.id;
-  }
-  //
-  // connexion avec speudo + email
-  else {
   }
 
   bcrypt
