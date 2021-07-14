@@ -10,6 +10,8 @@ const path = require("path");
 
 const userRoutes = require("./routes/User");
 
+const gestuserRoutes = require("./routes/Gestuser");
+
 const messageRoute = require("./routes/Message");
 
 const commentRoute = require("./routes/Comment");
@@ -26,6 +28,8 @@ const db = require("./models");
 db.sequelize.sync();
 
 app.use("/api/auth", userRoutes);
+
+app.use("/api/gestion", gestuserRoutes);
 
 app.use("/api/mess", messageRoute);
 
