@@ -303,19 +303,30 @@ exports.deleteMessage = async (req, res, next) => {
 //router.get("/comm/:messageId", messageCtrl.getAllCommFromMessage);
 //
 exports.getAllCommFromMessage = async (req, res, next) => {
-  let messId = req.params.messageID;
-  console.log("messId", messId);
+  //let messId = req.params.messageID;
 
-  let message = await Message.findByPk(messId);
-  console.log("message", message);
+  //
+  // verification que l'utilisateur connecté doit exister
+  //
+  let user = await User.findByPk(req.body.userId);
+  if (!user) {
+    res.status(400).send({
+      message: "Does Not exist a User with id = " + req.body.userId,
+    });
+    return;
+  }
+  //
+  // Le message doit exister
+  //
+  let message = await Message.findByPk(req.params.messageID);
   if (!message) {
     res.status(404).send({
-      message: "Does Not exist a Message with id = " + messId,
+      message: "Does Not exist a Message with id = " + req.params.messageID,
     });
   } else {
     var condition = {
       where: {
-        messageID: messId,
+        messageID: req.params.messageID,
       },
     };
     console.log("condition", condition);

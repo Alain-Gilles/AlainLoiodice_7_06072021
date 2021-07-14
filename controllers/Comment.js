@@ -83,8 +83,6 @@ exports.modifyComment = async (req, res, next) => {
   // Validate request
   //
   var _commentID = req.params.commentID;
-  console.log("_commentID", _commentID);
-
   //
   // vérification que le commentaire existe bien
   //
@@ -99,16 +97,16 @@ exports.modifyComment = async (req, res, next) => {
   }
   //
   // vérification que req.body contient bien id de l'utilisateur connecté
-  // présence de req.body.utilisateurID
+  // présence de req.body.userId
   //
-  if (!req.body.utilisateurID) {
+  if (!req.body.userId) {
     res.status(400).send({
       message:
         "L'iD de l'utilisateur connecté doit être renseigne dans body.utilisateurID",
     });
     return;
   }
-  let _userID = req.body.utilisateurID;
+  let _userID = req.body.userId;
   //
   // verification que l'utilisateur existe
   //
@@ -194,16 +192,16 @@ exports.deleteComment = async (req, res, next) => {
 
   //
   // vérification que req.body contient bien id de l'utilisateur connecté
-  // présence de req.body.utilisateurID
+  // présence de req.body.userId
   //
-  if (!req.body.utilisateurID) {
+  if (!req.body.userId) {
     res.status(400).send({
       message:
         "L'iD de l'utilisateur connecté doit être renseigne dans body.utilisateurID",
     });
     return;
   }
-  let _userID = req.body.utilisateurID;
+  let _userID = req.body.userId;
   //
   // verification que l'utilisateur existe
   //
@@ -246,6 +244,25 @@ exports.deleteComment = async (req, res, next) => {
 //
 exports.getOneComment = async (req, res, next) => {
   _commentID = req.params.commentID;
+
+  if (!req.body.userId) {
+    res.status(400).send({
+      message: "UserId can not be empty!",
+    });
+    return;
+  }
+  //
+  // verification que l'utilisateur existe
+  //
+  let user = await User.findByPk(req.body.userId);
+  if (!user) {
+    {
+      res.status(400).send({
+        message: "Does Not exist a User with id = " + req.body.userId,
+      });
+      return;
+    }
+  }
 
   Comment.findByPk(_commentID)
     .then((data) => {

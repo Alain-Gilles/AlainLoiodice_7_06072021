@@ -6,18 +6,18 @@ const Comment = db.comments;
 const Likedislike = db.likedislikes;
 //
 // Creer un liked ou un disliked pour un message par un user
-// req.body.userID   utilisateur qui veut liker ou disliker
+// req.body.userId   utilisateur qui veut liker ou disliker
 // req.body.messageID  message à liker ou disliker
 // req.body.action   contient 1 pour liked 2 pour disliked 0 pour défaire le liked ou le disliked
 //
 exports.createLikedislike = async (req, res, next) => {
   //
-  // req.body.messageId l'Id du message sur lequel on emet un avis
-  // req.body.userID id du user connecté
+  // req.body.messageID l'Id du message sur lequel on emet un avis
+  // req.body.userId id du user connecté
   //
   console.log("req.body", req.body);
   _messageID = req.body.messageID;
-  _userID = req.body.userID;
+  _userID = req.body.userId;
   _action = req.body.action;
   //
   // Vérification que le user existe
@@ -54,7 +54,7 @@ exports.createLikedislike = async (req, res, next) => {
   //
   console.log("_userID", _userID, " _messageID", _messageID);
   let likedislike = await Likedislike.findOne({
-    where: { userId: _userID, messageID: _messageID },
+    where: { userId: _userID, messageId: _messageID },
   });
   if (!likedislike) {
     //
@@ -219,16 +219,14 @@ exports.createLikedislike = async (req, res, next) => {
 };
 //
 // Enlever un liked ou le disliked d'un message (uniquement si l'utilisateur qui veut supprimer a créé le liked ou disliked pour ce message)
-// req.body.userID  contient ID du user connecté
+// req.body.userId  contient ID du user connecté
 // req.body.messageID contient ID du message
 // req.body.likeID contient ID du liked
 //
 exports.deleteLikedislike = async (req, res, next) => {
   //
-  console.log("req.body", req.body);
   _messageID = req.body.messageID;
-  _likeID = req.body.likeID;
-  _userID = req.body.userID;
+  _userID = req.body.userId;
   //
   // Vérification que req.body.messageID est renseigné
   //
@@ -239,57 +237,50 @@ exports.deleteLikedislike = async (req, res, next) => {
     return;
   }
   //
-  // Vérification que req.body.userID est renseigné
+  // Vérification que req.body.userId est renseigné
   //
-  if (!req.body.userID) {
+  if (!req.body.userId) {
     res.status(400).send({
-      message: "userID doit-être renseigné !",
-    });
-    return;
-  }
-  //
-  // Vérification que req.body.likeID est renseigné
-  //
-  if (!req.body.likeID) {
-    res.status(400).send({
-      message: "likeID doit-être renseigné !",
+      message: "userId doit-être renseigné !",
     });
     return;
   }
   //
   // Vérification que le message existe
   //
-  let message = await Message.findByPk(_messageID);
+  let message = await Message.findByPk(req.body.messageID);
   if (!message) {
     res.status(400).send({
-      message: "Does Not exist a Message with id = " + _messageID,
+      message: "Does Not exist a Message with id = " + req.body.messageID,
     });
     return;
   }
   //
-  // Vérification que le likedislike existe
+  // Vérification que le likedislike existe pour le couple userId messageId
   //
   let likedislike = await Likedislike.findOne({
-    where: { id: _likeID },
+    where: { userId: req.body.userId, messageId: req.body.messageID },
   });
   if (!likedislike) {
     res.status(400).send({
-      message: "Does Not exist a likedislike with _likeID = " + _likeID,
+      message:
+        "Does Not exist a likedislike with userId =   " +
+        req.body.userId +
+        "  messageId =  " +
+        req.body.messageID,
     });
     return;
   }
   //
   // L'utilisateur qui a créé le liked doit-être l'utilisateur connecté pour pouvoir le supprimer
   //
-  console.log("likedislike.userId", likedislike.userId);
-  console.log("_userID", _userID);
-  if (!(likedislike.userId == _userID)) {
+  if (!(likedislike.userId == req.body.userId)) {
     res.status(400).send({
       message:
         "Only user who create likedislike can delete it. User who create liked disliked :  " +
         likedislike.userId +
         "  user connected  : " +
-        _userID,
+        req.body.userId,
     });
     return;
   }
@@ -339,6 +330,25 @@ exports.deleteLikedislike = async (req, res, next) => {
 //
 exports.getAllLikedislike = async (req, res, next) => {
   //
+  // Vérification que req.body.userId est renseigné
+  //
+  if (!req.body.userId) {
+    res.status(400).send({
+      message: "userID doit-être renseigné !",
+    });
+    return;
+  }
+  //
+  // Vérification que le user existe
+  //
+  let user = await User.findByPk(req.body.userId);
+  if (!user) {
+    res.status(400).send({
+      message: "Does Not exist a User with id = " + req.body.userId,
+    });
+    return;
+  }
+  //
   // Vérification que req.body.messageID est renseigné
   //
   if (!req.body.messageID) {
@@ -378,21 +388,10 @@ exports.getAllLikedislike = async (req, res, next) => {
         message: err.message || "Some error occurred while retrieving Message.",
       });
     });
-  // Likedislike.findAll({
-  //   where: { messageId: req.body.messageID, unavis: 1 }
-  // })
-  // .then((data) => {
-  //   res.send(data);
-  // })
-  // .catch((err) => {
-  //   res.status(500).send({
-  //     message: err.message || "Some error occurred while retrieving Message.",
-  //   });
-  // });
 };
 //
 // Afficher le like ou dislike d'un utilisateur pour un message
-// req.body.userID
+// req.body.userId
 // req.body.messageID
 //
 exports.getUsermessLike = async (req, res, next) => {
@@ -406,9 +405,9 @@ exports.getUsermessLike = async (req, res, next) => {
     return;
   }
   //
-  // Vérification que req.body.userID est renseigné
+  // Vérification que req.body.userId est renseigné
   //
-  if (!req.body.userID) {
+  if (!req.body.userId) {
     res.status(400).send({
       message: "userID doit-être renseigné !",
     });
@@ -425,15 +424,15 @@ exports.getUsermessLike = async (req, res, next) => {
     return;
   }
   //
-  // existe t-il un likedislike pour le couple req.body.messageID / req.body.userID
+  // existe t-il un likedislike pour le couple req.body.messageID / req.body.userId
   let likedislike = await Likedislike.findOne({
-    where: { userId: req.body.userID, messageID: req.body.messageID },
+    where: { userId: req.body.userId, messageId: req.body.messageID },
   });
   if (!likedislike) {
     res.status(400).send({
       message:
         "Pas de likedislike pour le couple userID : " +
-        req.body.userID +
+        req.body.userId +
         "   messageID  :  " +
         req.body.messageID,
     });
@@ -448,7 +447,7 @@ exports.getUsermessLike = async (req, res, next) => {
   console.log("likedislike.unavis  :  ", likedislike.unavis);
   if (likedislike.unavis == 0) {
     var Nbrelikedislike1 = new Nbrelikedislike(
-      req.body.userID,
+      req.body.userId,
       req.body.messageID,
       0,
       0
@@ -458,7 +457,7 @@ exports.getUsermessLike = async (req, res, next) => {
     return;
   }
   var Nbrelikedislike2 = new Nbrelikedislike(
-    req.body.userID,
+    req.body.userId,
     req.body.messageID,
     likedislike.liked,
     likedislike.disliked
