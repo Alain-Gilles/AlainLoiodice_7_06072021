@@ -27,19 +27,6 @@ app.use(express.urlencoded({ extended: true }));
 const db = require("./models");
 db.sequelize.sync();
 
-app.use("/api/auth", userRoutes);
-
-app.use("/api/gestion", gestuserRoutes);
-
-app.use("/api/mess", messageRoute);
-
-app.use("/api/comm", commentRoute);
-
-app.use("/api/likedislike", likedislikeRoute);
-
-app.use(helmet());
-
-app.use("/images", express.static(path.join(__dirname, "images")));
 //
 //  CORS
 //
@@ -55,5 +42,19 @@ app.use((req, res, next) => {
   );
   next();
 });
+
+app.use("/api/auth", userRoutes);
+
+app.use("/api/gestion", gestuserRoutes);
+
+app.use("/api/mess", messageRoute);
+
+app.use("/api/comm", commentRoute);
+
+app.use("/api/likedislike", likedislikeRoute);
+
+app.use(helmet());
+
+app.use("/images", express.static(path.join(__dirname, "images")));
 
 module.exports = app;

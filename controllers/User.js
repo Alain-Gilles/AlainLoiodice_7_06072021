@@ -35,6 +35,7 @@ exports.signup = async (req, res, next) => {
   //
   // Validate request
   //
+  console.log("req.body", req.body);
   //
   // username obligatoire
   //
