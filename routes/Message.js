@@ -27,6 +27,7 @@ router.get("/comm/:messageID", auth, messageCtrl.getAllCommFromMessage);
 //
 // Afficher un message
 //
-router.get("/:messageID", auth, messageCtrl.getOneMessage);
+//router.get("/:messageID", auth, messageCtrl.getOneMessage);
+router.post("/getOne/:messageID", auth, messageCtrl.getOneMessage);
 //
 module.exports = router;
