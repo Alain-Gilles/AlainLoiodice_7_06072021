@@ -86,6 +86,7 @@ exports.getAllMessage = async (req, res, next) => {
     });
     return;
   }
+
   Message.findAll()
     .then((data) => {
       res.send(data);
