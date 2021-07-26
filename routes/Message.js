@@ -23,7 +23,8 @@ router.post("/get", auth, messageCtrl.getAllMessage);
 //
 // Afficher tous les commentaires d'un message
 //
-router.get("/comm/:messageID", auth, messageCtrl.getAllCommFromMessage);
+//router.get("/comm/:messageID", auth, messageCtrl.getAllCommFromMessage);
+router.post("/comm/:messageID", auth, messageCtrl.getAllCommFromMessage);
 //
 // Afficher un message
 //
