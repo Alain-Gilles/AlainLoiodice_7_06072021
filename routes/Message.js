@@ -18,17 +18,14 @@ router.delete("/:messageID", auth, messageCtrl.deleteMessage);
 //
 // Afficher tous les messages
 //
-//router.get("/", auth, messageCtrl.getAllMessage);
-router.post("/get", auth, messageCtrl.getAllMessage);
+router.get("/", auth, messageCtrl.getAllMessage);
 //
 // Afficher tous les commentaires d'un message
 //
-//router.get("/comm/:messageID", auth, messageCtrl.getAllCommFromMessage);
-router.post("/comm/:messageID", auth, messageCtrl.getAllCommFromMessage);
+router.get("/comm/:messageID", auth, messageCtrl.getAllCommFromMessage);
 //
 // Afficher un message
 //
-//router.get("/:messageID", auth, messageCtrl.getOneMessage);
-router.post("/getOne/:messageID", auth, messageCtrl.getOneMessage);
+router.get("/:messageID", auth, messageCtrl.getOneMessage);
 //
 module.exports = router;

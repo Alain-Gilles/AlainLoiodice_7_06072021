@@ -10,10 +10,17 @@ module.exports = (req, res, next) => {
     console.log("token  ", token);
     console.log("userId  ", userId);
     console.log("req.body  ", req.body);
+    console.log("req.query.userId  ", req.query.userId);
     console.log("req.body.userId  ", req.body.userId);
-    A = Number(req.body.userId);
+    let A = "";
+    if (!req.body.userId) {
+      A = Number(req.query.userId);
+    } else {
+      A = Number(req.body.userId);
+    }
     console.log("A  ", A);
-    if (req.body.userId && A !== userId) {
+    //if (req.body.userId && A !== userId)  {
+    if (A !== userId) {
       throw "Invalid user ID";
     } else {
       next();

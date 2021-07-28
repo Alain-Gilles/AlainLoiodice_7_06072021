@@ -70,7 +70,7 @@ exports.getAllMessage = async (req, res, next) => {
   //
   // l'Id de l'utilisateur connecté est obligatoire
   //
-  if (!req.body.userId) {
+  if (!req.query.userId) {
     res.status(400).send({
       message: "user can not be empty!",
     });
@@ -79,10 +79,10 @@ exports.getAllMessage = async (req, res, next) => {
   //
   // L'utilisateur doit exister sinon erreur
   //
-  let user = await User.findByPk(req.body.userId);
+  let user = await User.findByPk(req.query.userId);
   if (!user) {
     res.status(400).send({
-      message: "Does Not exist a User with id = " + req.body.userId,
+      message: "Does Not exist a User with id = " + req.query.userId,
     });
     return;
   }
@@ -106,7 +106,7 @@ exports.getOneMessage = async (req, res, next) => {
   //
   // l'Id de l'utilisateur connecté est obligatoire
   //
-  if (!req.body.userId) {
+  if (!req.query.userId) {
     res.status(400).send({
       message: "user can not be empty!",
     });
@@ -115,10 +115,10 @@ exports.getOneMessage = async (req, res, next) => {
   //
   // L'utilisateur doit exister sinon erreur
   //
-  let user = await User.findByPk(req.body.userId);
+  let user = await User.findByPk(req.query.userId);
   if (!user) {
     res.status(400).send({
-      message: "Does Not exist a User with id = " + req.body.userId,
+      message: "Does Not exist a User with id = " + req.query.userId,
     });
     return;
   }
@@ -304,15 +304,13 @@ exports.deleteMessage = async (req, res, next) => {
 //router.get("/comm/:messageId", messageCtrl.getAllCommFromMessage);
 //
 exports.getAllCommFromMessage = async (req, res, next) => {
-  //let messId = req.params.messageID;
-
   //
   // verification que l'utilisateur connecté doit exister
   //
-  let user = await User.findByPk(req.body.userId);
+  let user = await User.findByPk(req.query.userId);
   if (!user) {
     res.status(400).send({
-      message: "Does Not exist a User with id = " + req.body.userId,
+      message: "Does Not exist a User with id = " + req.query.userId,
     });
     return;
   }
