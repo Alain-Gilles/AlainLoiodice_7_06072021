@@ -89,7 +89,18 @@ exports.getAllMessage = async (req, res, next) => {
   //
   // Tri décroissant "DESC" ou croissant "ASC"
   //
-  Message.findAll({ order: [["updatedAt", "DESC"]] })
+  Message.findAll(
+    {
+      include: [
+        {
+          model: User,
+          as: "user",
+          attributes: ["username", "pseudo", "isAdmin"],
+        },
+      ],
+    },
+    { order: [["updatedAt", "DESC"]] }
+  )
     .then((data) => {
       res.send(data);
     })
@@ -125,7 +136,15 @@ exports.getOneMessage = async (req, res, next) => {
     return;
   }
 
-  Message.findByPk(_messageID)
+  Message.findByPk(_messageID, {
+    include: [
+      {
+        model: User,
+        as: "user",
+        attributes: ["username", "pseudo", "isAdmin"],
+      },
+    ],
+  })
     .then((data) => {
       if (data === null) {
         res.status(500).send({
@@ -329,6 +348,13 @@ exports.getAllCommFromMessage = async (req, res, next) => {
       where: {
         messageID: req.params.messageID,
       },
+      include: [
+        {
+          model: User,
+          as: "user",
+          attributes: ["username", "pseudo", "isAdmin"],
+        },
+      ],
       order: [["updatedAt", "DESC"]],
     };
     console.log("condition", condition);
