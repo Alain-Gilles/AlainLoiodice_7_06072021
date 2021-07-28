@@ -86,8 +86,10 @@ exports.getAllMessage = async (req, res, next) => {
     });
     return;
   }
-
-  Message.findAll()
+  //
+  // Tri décroissant "DESC" ou croissant "ASC"
+  //
+  Message.findAll({ order: [["updatedAt", "DESC"]] })
     .then((data) => {
       res.send(data);
     })
@@ -327,6 +329,7 @@ exports.getAllCommFromMessage = async (req, res, next) => {
       where: {
         messageID: req.params.messageID,
       },
+      order: [["updatedAt", "DESC"]],
     };
     console.log("condition", condition);
     Comment.findAll(condition)
