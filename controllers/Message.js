@@ -89,18 +89,16 @@ exports.getAllMessage = async (req, res, next) => {
   //
   // Tri décroissant "DESC" ou croissant "ASC"
   //
-  Message.findAll(
-    {
-      include: [
-        {
-          model: User,
-          as: "user",
-          attributes: ["username", "pseudo", "isAdmin"],
-        },
-      ],
-    },
-    { order: [["updatedAt", "DESC"]] }
-  )
+  Message.findAll({
+    include: [
+      {
+        model: User,
+        as: "user",
+        attributes: ["username", "pseudo", "isAdmin"],
+      },
+    ],
+    order: [["updatedAt", "DESC"]],
+  })
     .then((data) => {
       res.send(data);
     })
