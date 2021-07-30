@@ -211,6 +211,8 @@ exports.login = async (req, res, next) => {
   //
   let MotDePasse = "";
   let User_Id = 0;
+  let User_Is_Admin = false;
+  let User_Pseudo = "";
   //
   // si pseudo est renseigné il doit exister
   //
@@ -226,6 +228,8 @@ exports.login = async (req, res, next) => {
     }
     MotDePasse = user1.password;
     User_Id = user1.id;
+    User_Is_Admin = user1.isAdmin;
+    User_Pseudo = user1.pseudo;
   }
   //
   // il faut renseigner soit le pseudo soit email
@@ -286,6 +290,8 @@ exports.login = async (req, res, next) => {
     }
     MotDePasse = user.password;
     User_Id = user.id;
+    User_Is_Admin = user.isAdmin;
+    User_Pseudo = user.pseudo;
   }
 
   bcrypt
@@ -302,6 +308,8 @@ exports.login = async (req, res, next) => {
         token: jwt.sign({ userId: User_Id }, process.env.SECRET_KEY, {
           expiresIn: "24h",
         }),
+        userIsAdmin: User_Is_Admin,
+        userPseudo: User_Pseudo,
       });
     })
     .catch((err) => {

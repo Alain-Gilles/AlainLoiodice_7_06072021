@@ -226,6 +226,10 @@ exports.modifyMessage = async (req, res, next) => {
   //
   // verification que l'utilisateur connecté est le créateur du message ou l'administrateur si ce n'est pas le cas erreur
   //
+  console.log("_userID ", _userID);
+  console.log("user ", user);
+  console.log("user.isAdmin ", user.isAdmin);
+
   if (!(message.userId == _userID || user.isAdmin)) {
     res.status(400).send({
       message:
