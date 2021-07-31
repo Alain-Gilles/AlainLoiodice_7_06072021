@@ -8,6 +8,6 @@ router.post("/signup", userCtrl.signup);
 router.post("/login", userCtrl.login);
 
 //////
-router.post("/", auth, userCtrl.getAllUser);
+router.get("/", auth, userCtrl.getAllUser);
 /////
 module.exports = router;
