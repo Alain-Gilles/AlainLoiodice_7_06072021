@@ -330,4 +330,72 @@ exports.getAllUser = async (req, res, next) => {
       });
     });
 };
+
+exports.deleteOneUser = async (req, res, next) => {
+  ///////////
+  // userId utilisateur à supprimer
+  var userId = req.params.userID;
+  // _userId utilisateur connecté
+  var _userID = req.body.userId;
+  //
+  // Id de l'utilisateur à supprimer doit-être renseigné
+  //
+  if (!_userID) {
+    res.status(400).send({
+      message: "L'Id de l'utilisateur à supprimé est absent de la requête !",
+    });
+    return;
+  }
+  //
+  // Id de l'utilisateur connecté doit-être renseigné
+  //
+  if (!userId) {
+    res.status(400).send({
+      message: "L'Id de l'utilisateur connecté est absent de la requête !",
+    });
+    return;
+  }
+  //
+  // L'Id du user à supprimer doit exister
+  //
+  let user = await User.findByPk(userId);
+  if (!user) {
+    res.status(400).send({
+      message: "Does Not exist a User with id = " + userId,
+    });
+    return;
+  }
+  //
+  // L'Id de l'utilisateur connecté doit exister
+  //
+  let user1 = await User.findByPk(_userID);
+  if (!user1) {
+    res.status(400).send({
+      message: "Does Not exist a User connected with id = " + _userID,
+    });
+    return;
+  }
+  //
+  // Seul l'administrateur peut supprimer un utilisateur
+  //
+
+  if (!user1.isAdmin) {
+    res.status(400).send({
+      message:
+        "Only Administrator can delete a user, connect user = " +
+        _userID +
+        " user to be deleted : " +
+        userId,
+    });
+    return;
+  }
+  //
+  // suppression du message
+  //
+  await user.destroy({ where: { id: userId } });
+  res.status(200).send({
+    message: "Delete Successfully a user with id = " + userId,
+  });
+  //////////
+};
 ////////////////
