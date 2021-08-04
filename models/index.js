@@ -1,29 +1,5 @@
 const dbConfig = require("../config/db.config.js");
 
-//////////////////////////////////////////////////////
-// Creation de la base de données si elle n'existe pas
-//
-const mysql = require("mysql");
-const nomBase = dbConfig.DB;
-const creatDB = "CREATE DATABASE IF NOT EXISTS " + nomBase;
-
-const dbinit = mysql.createConnection({
-  host: dbConfig.HOST,
-  user: dbConfig.USER,
-  password: dbConfig.PASSWORD,
-});
-
-dbinit.connect(function (err) {
-  if (err) throw err;
-  console.log("1 Connecté à la base de données MySQL!");
-  dbinit.query(creatDB, function (err, result) {
-    if (err) throw err;
-    console.log("2 Base de données créée !");
-  });
-});
-//
-////////////////////////////////////////////////
-
 const Sequelize = require("sequelize");
 const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
   host: dbConfig.HOST,
